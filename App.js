@@ -1,3 +1,4 @@
+// --- Importing libraries ---
 import { StyleSheet, Text, View, Image, SafeAreaView } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import MyTabs from './navigation/bottomNav';
