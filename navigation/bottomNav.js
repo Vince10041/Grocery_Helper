@@ -29,6 +29,7 @@ function MyTabs() {
                     tabBarLabel: "Add",
                     tabBarIcon: ({ color, size }) => <Fontisto name="shopping-basket-add" size={size} color={color}/>,
                     tabBarActiveTintColor: "black",
+                    headerShown: false,
                 }} 
                 component={AddProduct} 
             />
@@ -38,6 +39,7 @@ function MyTabs() {
                     tabBarLabel: "Check Price",
                     tabBarIcon: ({ color, size }) => <Foundation name="magnifying-glass" size={size} color={color} />,
                     tabBarActiveTintColor: "black",
+                    headerShown: false,
                 }} 
                 component={CheckBestPrice} 
             />
@@ -47,6 +49,7 @@ function MyTabs() {
                     tabBarLabel: "Statistics",
                     tabBarIcon: ({ color, size }) => <FontAwesome name="bar-chart" size={size} color={color} />,
                     tabBarActiveTintColor: "black",
+                    headerShown: false,
                 }} 
                 component={ShowStats} 
             />
