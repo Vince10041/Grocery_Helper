@@ -10,8 +10,8 @@ import { FontAwesome } from "@expo/vector-icons";
 
 // --- Importing screens ---
 import AddProduct from "../screens/AddProduct";
-import CheckBestPrice from "../screens/checkBestPrice";
-import ShowStats from "../screens/showStats";
+import CheckBestPrice from "../screens/CheckBestPrice";
+import ShowStats from "../screens/ShowStats";
 
 const Tab = createBottomTabNavigator();
 
