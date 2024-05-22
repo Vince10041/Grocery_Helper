@@ -40,8 +40,8 @@ function AddProduct () {
     useEffect(() => {
 
         // create database first if it does not exist
-        const createDB = async () => {
-            await db.execAsync(
+        db.transaction(tx => {
+            tx.executeSql(
                 'CREATE TABLE IF NOT EXISTS Products (' +
                 'id INTEGER PRIMARY KEY AUTOINCREMENT, ' +
                 'name TEXT NOT NULL, ' +
@@ -52,14 +52,12 @@ function AddProduct () {
                 'inputDate DATETIME NOT NULL' +
                 ')'
             );
-        }
-
-        createDB();
+        });
         
     }, []);
 
     // add to db function
-    async function addProduct () {
+    function addProduct () {
 
         console.log(name);
         console.log(brand);
@@ -68,14 +66,18 @@ function AddProduct () {
         console.log(unit);
         console.log(inputTime);
 
-        const addProduct = await db.execAsync(
-            'INSERT INTO Products ' +
-            '(name, brand, price, volume, unit, inputDate) ' +
-            'VALUES ' +
-            '(?, ?, ?, ?, ?)',
-            [name, brand, price, volume, unit, inputTime]
-        );
-
+        db.transaction(tx => {
+            tx.executeSql(
+                'INSERT INTO Products ' +
+                '(name, brand, price, volume, unit, inputDate) ' +
+                'VALUES ' +
+                '(?, ?, ?, ?, ?, ?)',
+                [name, brand, price, volume, unit, inputTime],
+                (txobj, result) => console.log(result.insertId),
+                (txobj, error) => console.log(error)
+            );
+        });
+        
         // clear the input 
         setName('');
         setBrand('');
