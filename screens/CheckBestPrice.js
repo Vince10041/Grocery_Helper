@@ -1,56 +1,121 @@
 // --- Importing libraries ---
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, Image, SafeAreaView } from 'react-native';
-import { Dropdown } from "react-native-element-dropdown";
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, Text, View, TextInput, SafeAreaView, ScrollView } from 'react-native';
 import * as SQLite from 'expo-sqlite';
+import { Divider } from "@rneui/themed";
 
-function CheckBestPrice () {
+const db = SQLite.openDatabase('product.db');
 
+const CheckBestPrice = () => {
+  const [products, setProducts] = useState([]);
+  const [target, setTarget] = useState("");
 
-    const [products, setProducts] = useState([]);
+  useEffect(() => {
+    fetchAllProducts();
+  }, []);
 
-    // try to get all the products in db
-    const db = SQLite.openDatabase('product.db');
+  const fetchAllProducts = () => {
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM Products', null, 
+        (txobj, resultSet) => setProducts(resultSet.rows._array),
+        (txobj, error) => console.log(error)
+      );
+    });
+  };
 
-    useEffect(() => {
-        
-        db.transaction(tx => {
-            tx.executeSql('SELECT * FROM Products', null, 
-                (txobj, resultSet) => setProducts(resultSet.rows._array),
-                (txobj, error) => console.log(error)
-            );
-        });
-
-    }, []);
-
-
-    // for displaying products
-    const showProducts = () => {
-        return products.map((product, index) => {
-            return (
-                <View key={index}>
-                    <Text>{product.name}</Text>
-                    <Text>{product.brand}</Text>
-                    <Text>{product.price}</Text>
-                    <Text>{product.volume}</Text>
-                    <Text>{product.unit}</Text>
-                    <Text>{product.inputDate}</Text>
-                </View>
-            );
-        });
+  const debounce = (func, timeout = 300) => {
+    let timer;
+    return (...args) => {
+      clearTimeout(timer);
+      timer = setTimeout(() => { func.apply(this, args); }, timeout);
     };
+  };
 
-    return (
-        <SafeAreaView style={styles}>
-            <Text>This is the checkBestPrice page</Text>
+  const searchProduct = (query) => {
+    if (query.trim() === "") {
+      fetchAllProducts();
+      return;
+    }
 
-            {showProducts()}
-        </SafeAreaView>
-    );
-}
+    db.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM Products WHERE name LIKE ?',
+        [`%${query}%`],
+        (txobj, resultSet) => setProducts(resultSet.rows._array),
+        (txobj, error) => console.log(error)
+      );
+    });
+  };
+
+  const debouncedSearch = useCallback(debounce(searchProduct, 300), []);
+
+  const handleInputChange = (text) => {
+    setTarget(text);
+    debouncedSearch(text);
+  };
+
+  const showProducts = () => {
+    return products.map((product, index) => (
+      <View key={index} style={styles.container}>
+        <Text>{'Name: ' + product.name}</Text>
+        <Text>{'Brand: ' + product.brand}</Text>
+        <Text>{'Price: ' + product.price}</Text>
+        <Text>{'Amount: ' + product.volume + ' ' + product.unit}</Text>
+        <Text>{'Date bought: ' + product.inputDate}</Text>
+      </View>
+    ));
+  };
+
+  return (
+    <SafeAreaView>
+      <View>
+        <Text style={styles.searchText}>Search a Product</Text>
+        <TextInput
+          style={styles.searchBox}
+          value={target}
+          onChangeText={handleInputChange}
+        />
+      </View>
+
+      <Divider width={2} />
+
+      <ScrollView>
+        {showProducts()}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-
+  container: {
+    marginTop: 20,
+    marginLeft: 15,
+    marginRight: 15,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderColor: "grey",
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  searchBox: {
+    borderColor: "gray",
+    borderWidth: 1,
+    borderRadius: 10,
+    padding: 10,
+    marginLeft: 15,
+    marginRight: 15,
+    marginBottom: 20,
+  },
+  searchText: {
+    marginLeft: 15,
+    marginRight: 15,
+    marginTop: 15,
+    marginBottom: 10,
+    fontWeight: "bold",
+    fontSize: 25,
+  },
 });
 
 export default CheckBestPrice;

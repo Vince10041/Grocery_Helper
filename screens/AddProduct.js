@@ -91,11 +91,6 @@ function AddProduct () {
     return (
         <SafeAreaView>
 
-
-            <View style={styles.container}>
-                <Text style={styles.textLabel}>Add a New Product!</Text>
-            </View>
-
             <View style={styles.container}>
                 <Text style={styles.textLabel}>Product Name</Text>
                 <TextInput 
@@ -213,6 +208,8 @@ const styles = StyleSheet.create({
     },
     textLabel: {
         marginLeft: 15,
+        marginBottom: 5,
+        fontSize: 16,
     },
 });
 
