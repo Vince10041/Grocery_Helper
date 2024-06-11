@@ -95,7 +95,7 @@ function AddProduct () {
                 <Text style={styles.textLabel}>Product Name</Text>
                 <TextInput 
                     style={styles.inputBox}
-                    placeholder={name}
+                    value={name}
                     onChangeText={setName}
                 />
             </View>
@@ -105,7 +105,7 @@ function AddProduct () {
                 <Text style={styles.textLabel}>Brand</Text>
                 <TextInput 
                     style={styles.inputBox}
-                    placeholder={brand}
+                    value={brand}
                     onChangeText={setBrand}
                 />
             </View>
@@ -115,7 +115,7 @@ function AddProduct () {
                 <Text style={styles.textLabel}>Price</Text>
                 <TextInput 
                     style={styles.inputBox}
-                    placeholder={price.toString()}
+                    value={price.toString()}
                     onChangeText={setPrice}
                 />
             </View>
@@ -125,7 +125,7 @@ function AddProduct () {
                 <Text style={styles.textLabel}>Volume</Text>
                 <TextInput 
                     style={styles.inputBox}
-                    placeholder={volume.toString()}
+                    value={volume.toString()}
                     onChangeText={setVolume}
                 />
             </View>
