@@ -1,126 +1,88 @@
 // --- Importing libraries ---
-import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
-import { LineChart, Grid } from 'react-native-svg-charts';
-import Collapsible from 'react-native-collapsible';
-import * as SQLite from 'expo-sqlite';
+import React, { useEffect, useState, useCallback } from "react";
+import { StyleSheet, Text, View, TextInput, SafeAreaView, ScrollView, Pressable, Dimensions } from 'react-native';
+import { LineGraph } from "../components/LineGraph";
+import { Line } from "react-native-svg";
 
-const db = SQLite.openDatabase('product.db');
+function ShowStats () {
 
-function ShowStats() {
-    const [product, setProduct] = useState('');
-    const [data, setData] = useState([]);
-    const [collapsed, setCollapsed] = useState(true);
+    // setting the search target
+    const [target, setTarget] = useState("");
 
-    const handleConfirm = () => {
-        db.transaction(tx => {
-            tx.executeSql(
-                'SELECT inputDate, price FROM Products WHERE name = ? ORDER BY inputDate ASC',
-                [product],
-                (txObj, resultSet) => {
-                    const formattedData = resultSet.rows._array.map(row => ({
-                        time: row.inputDate,
-                        price: row.price
-                    }));
-                    setData(formattedData);
-                },
-                (txObj, error) => console.error('Error fetching data: ', error)
-            );
-        });
-    };
+    // generate graph based on input
+    function genGraph () {
 
-    const toggleExpanded = () => {
-        setCollapsed(!collapsed);
-    };
+        console.log(target);
 
-    const prices = data.map(item => item.price);
-    const times = data.map(item => item.time);
+    }
+
 
     return (
-        <SafeAreaView style={styles.container}>
-            <View style={styles.searchContainer}>
+        <SafeAreaView>
+
+            <Text style={styles.searchText}>Input a Product</Text>
+
+            <View style={styles.searchSection}>
                 <TextInput
-                    style={styles.searchInput}
-                    placeholder="Search Product"
-                    value={product}
-                    onChangeText={setProduct}
+                style={styles.searchBox}
+                value={target}
+                onChangeText={setTarget}
                 />
-                <Button
-                    title="Confirm"
-                    onPress={handleConfirm}
-                />
+
+                <Pressable 
+                    style={styles.saveButton}
+                    onPress={genGraph}
+                >
+                    <Text style={styles.saveText}> Check </Text>
+                </Pressable>
             </View>
 
-            {data.length > 0 && (
-                <View style={styles.chartContainer}>
-                    <LineChart
-                        style={{ height: 200 }}
-                        data={prices}
-                        svg={{ stroke: 'rgb(134, 65, 244)' }}
-                        contentInset={{ top: 20, bottom: 20 }}
-                    >
-                        <Grid />
-                    </LineChart>
-                </View>
-            )}
 
-            {data.length > 0 && (
-                <View style={styles.collapsibleContainer}>
-                    <TouchableOpacity onPress={toggleExpanded}>
-                        <Text style={styles.collapsibleTitle}>Show Data Points</Text>
-                    </TouchableOpacity>
-                    <Collapsible collapsed={collapsed}>
-                        <ScrollView style={styles.dataList}>
-                            {data.map((item, index) => (
-                                <Text key={index} style={styles.dataItem}>
-                                    Time: {item.time}, Price: {item.price}
-                                </Text>
-                            ))}
-                        </ScrollView>
-                    </Collapsible>
-                </View>
-            )}
+            <LineGraph 
+                data={[12, 30, 5, 20, 51, 1, 4, 7, 2]}
+                color="rose"
+                label="views"
+                stat="120k"
+            />
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 15,
-    },
-    searchContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+    searchText : {
         marginLeft: 15,
         marginRight: 15,
+        marginTop: 15,
+        marginBottom: 10,
+        fontWeight: "bold",
+        fontSize: 25,
     },
-    searchInput: {
+    searchSection : {
         flex: 1,
-        height: 40,
-        borderColor: 'gray',
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+    },
+    searchBox : {
+        flexBasis: '65%',
+        borderColor: "gray",
         borderWidth: 1,
-        marginRight: 10,
-        paddingLeft: 8,
+        borderRadius: 10,
+        padding: 10,
     },
-    chartContainer: {
-        marginTop: 20,
+    saveButton : {
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: 'black',
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 10,
     },
-    collapsibleContainer: {
-        marginTop: 20,
-    },
-    collapsibleTitle: {
+    saveText : {
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 10,
-    },
-    dataList: {
-        maxHeight: 200,
-    },
-    dataItem: {
-        padding: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ddd',
+        letterSpacing: 0.5,
+        color: 'white',
     },
 });
 
