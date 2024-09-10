@@ -3,6 +3,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, Text, View, TextInput, SafeAreaView, ScrollView, Pressable, Dimensions } from 'react-native';
 import { LineGraph } from "../components/LineGraph";
 import { Line } from "react-native-svg";
+import { tw } from "../tailwind";
 
 function ShowStats () {
 
@@ -40,6 +41,7 @@ function ShowStats () {
 
             <LineGraph 
                 data={[12, 30, 5, 20, 51, 1, 4, 7, 2]}
+                style={[tw`mb-4`]}
                 color="rose"
                 label="views"
                 stat="120k"
