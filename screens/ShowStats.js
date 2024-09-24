@@ -38,14 +38,15 @@ function ShowStats () {
                 </Pressable>
             </View>
 
-
-            <LineGraph 
-                data={[12, 30, 5, 20, 51, 1, 4, 7, 2]}
-                style={[tw`mb-4`]}
-                color="rose"
-                label="views"
-                stat="120k"
-            />
+            <View style={styles.graphContainer}>
+                <LineGraph 
+                    data={[12, 30, 5, 20, 51, 1, 4, 7, 2]}
+                    style={[tw`mb-4`]}
+                    color="rose"
+                    label={target}
+                    stat="120k"
+                />
+            </View>
         </SafeAreaView>
     );
 }
@@ -86,6 +87,10 @@ const styles = StyleSheet.create({
         letterSpacing: 0.5,
         color: 'white',
     },
+    graphContainer : {
+        marginLeft: 20,
+        marginRight: 20,
+    }
 });
 
 export default ShowStats;
