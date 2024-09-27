@@ -10,6 +10,7 @@ export type LineGraphProps = {
     color: string;
     label: string;
     stat: string;
+    percentage: string;
     style?: StyleProp<ViewStyle>;
 };
 
@@ -83,9 +84,9 @@ export function LineGraph(props: LineGraphProps) {
             <Text
               numberOfLines={1}
               adjustsFontSizeToFit
-              style={[tw`text-sm text-red-500 p-1 font-bold`]}
+              style={[tw`text-sm text-blue-500 p-1 font-bold`]}
             >
-              50%
+              {props.percentage}
             </Text>
           </View>
         </View>

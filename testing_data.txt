@@ -1,0 +1,4 @@
+// The first one can be testing data for input
+Detergent 1
+Welcome
+12.9

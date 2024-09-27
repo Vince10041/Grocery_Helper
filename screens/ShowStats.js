@@ -3,48 +3,65 @@ import React, { useEffect, useState, useCallback } from "react";
 import { StyleSheet, Text, View, TextInput, SafeAreaView, ScrollView, Pressable, Dimensions } from 'react-native';
 import { LineGraph } from "../components/LineGraph";
 import { Line } from "react-native-svg";
+import * as SQLite from 'expo-sqlite';
 import { tw } from "../tailwind";
+
+const db = SQLite.openDatabase('product.db');
 
 function ShowStats () {
 
     // setting the search target
     const [target, setTarget] = useState("");
+    // for the returned resutl
+    const [graphData, setGraphData] = useState([]);
 
     // generate graph based on input
-    function genGraph () {
+    const genGraph = (query) => {
+        db.transaction(tx => {
+            tx.executeSql(
+            'SELECT * FROM Products WHERE name LIKE ?',
+            [`%${query}%`],
+            (txobj, resultSet) => {
+                const results = resultSet.rows._array;
 
-        console.log(target);
-
-    }
+                // Extract prices from the results and set graph data
+                const prices = results.map(product => product.price);
+                setGraphData(prices);
+                console.log(graphData);
+            },
+            (txobj, error) => console.log(error)
+            );
+        });
+    };
 
 
     return (
-        <SafeAreaView>
-
+        <SafeAreaView style={styles.container}>
             <Text style={styles.searchText}>Input a Product</Text>
 
             <View style={styles.searchSection}>
                 <TextInput
-                style={styles.searchBox}
-                value={target}
-                onChangeText={setTarget}
+                    style={styles.searchBox}
+                    value={target}
+                    onChangeText={setTarget}
                 />
 
-                <Pressable 
+                <Pressable
                     style={styles.saveButton}
-                    onPress={genGraph}
+                    onPress={() => genGraph(target)}
                 >
                     <Text style={styles.saveText}> Check </Text>
                 </Pressable>
             </View>
 
             <View style={styles.graphContainer}>
-                <LineGraph 
-                    data={[12, 30, 5, 20, 51, 1, 4, 7, 2]}
+                <LineGraph
+                    data={graphData}
                     style={[tw`mb-4`]}
-                    color="rose"
+                    color="blue"
                     label={target}
-                    stat="120k"
+                    stat=""
+                    percentage=""
                 />
             </View>
         </SafeAreaView>
@@ -52,7 +69,11 @@ function ShowStats () {
 }
 
 const styles = StyleSheet.create({
-    searchText : {
+    container: {
+        flex: 1,
+        justifyContent: 'flex-start',
+    },
+    searchText: {
         marginLeft: 15,
         marginRight: 15,
         marginTop: 15,
@@ -60,20 +81,19 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 25,
     },
-    searchSection : {
-        flex: 1,
-        flexWrap: 'wrap',
+    searchSection: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        marginBottom: 25, // Ensure margin between sections
     },
-    searchBox : {
+    searchBox: {
         flexBasis: '65%',
         borderColor: "gray",
         borderWidth: 1,
         borderRadius: 10,
         padding: 10,
     },
-    saveButton : {
+    saveButton: {
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: 'black',
@@ -81,13 +101,13 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 10,
     },
-    saveText : {
+    saveText: {
         fontSize: 16,
         fontWeight: 'bold',
         letterSpacing: 0.5,
         color: 'white',
     },
-    graphContainer : {
+    graphContainer: {
         marginLeft: 20,
         marginRight: 20,
     }

@@ -86,7 +86,19 @@ function AddProduct () {
         setUnit('');
         setTime(dateObj.getDate() + '/' + dateObj.getMonth() + '/' + dateObj.getFullYear());
         
-    }
+    };
+
+    // Testing button to delete all product data
+    const deleteAll = () => {
+        db.transaction(tx => {
+            tx.executeSql(
+              'DELETE FROM Products',
+              [],
+              (_, result) => console.log(`Deleted ${result.rowsAffected} rows`),
+              (_, error) => console.log('Error deleting records:', error)
+            );
+        });
+    };  
 
     return (
         <SafeAreaView>
@@ -162,6 +174,13 @@ function AddProduct () {
                     <Text style={styles.saveText}> Save </Text>
                 </Pressable>
             </View>
+
+            <Pressable
+                style={styles.saveButton}
+                onPress={deleteAll}
+            >
+                <Text style={styles.saveText}>Delete All</Text>
+            </Pressable>
             
         </SafeAreaView>
     );
