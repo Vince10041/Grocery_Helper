@@ -9,31 +9,27 @@ import { tw } from "../tailwind";
 const db = SQLite.openDatabase('product.db');
 
 function ShowStats () {
-
-    // setting the search target
     const [target, setTarget] = useState("");
-    // for the returned resutl
     const [graphData, setGraphData] = useState([]);
 
-    // generate graph based on input
-    const genGraph = (query) => {
+    const genGraph = useCallback((query) => {
         db.transaction(tx => {
             tx.executeSql(
             'SELECT * FROM Products WHERE name LIKE ?',
             [`%${query}%`],
             (txobj, resultSet) => {
                 const results = resultSet.rows._array;
-
-                // Extract prices from the results and set graph data
                 const prices = results.map(product => product.price);
-                setGraphData(prices);c
-                console.log(graphData);
+                setGraphData(prices);
             },
             (txobj, error) => console.log(error)
             );
         });
-    };
+    }, []);
 
+    useEffect(() => {
+        console.log("Graph data updated:", graphData);
+    }, [graphData]);
 
     return (
         <SafeAreaView style={styles.container}>
