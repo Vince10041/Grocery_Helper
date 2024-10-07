@@ -26,7 +26,7 @@ function ShowStats () {
 
                 // Extract prices from the results and set graph data
                 const prices = results.map(product => product.price);
-                setGraphData(prices);
+                setGraphData(prices);c
                 console.log(graphData);
             },
             (txobj, error) => console.log(error)

@@ -1,4 +1,16 @@
-// The first one can be testing data for input
-Detergent 1
-Welcome
-12.9
+Format:
+- Product Name
+- Brand
+- Price
+- Volume
+- Unit
+- Timestamp
+
+////////
+
+
+Dish Detergent (lemon)
+AXE
+48
+2600
+mL

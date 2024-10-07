@@ -1,0 +1,52 @@
+{
+    "initialData": [
+        {
+            "name": "Dish Detergent", 
+            "brand": "DoDoMe", 
+            "price": 29, 
+            "volume": 1000, 
+            "unit": "mL", 
+            "inputDate": "1/10/2024"
+        },
+        {
+            "name": "Dish Detergent", 
+            "brand": "Swashes", 
+            "price": 96, 
+            "volume": 4, 
+            "unit": "L", 
+            "inputDate": "2/10/2024"
+        },
+        {
+            "name": "Dish Detergent", 
+            "brand": "Swashes", 
+            "price": 41, 
+            "volume": 1.5, 
+            "unit": "L", 
+            "inputDate": "2/10/2024"
+        },
+        {
+            "name": "Dish Detergent (aloe fresh)", 
+            "brand": "earth choice", 
+            "price": 28.9, 
+            "volume": 1, 
+            "unit": "L", 
+            "inputDate": "3/10/2024"
+        },
+        {
+            "name": "Dish Detergent (lemon)", 
+            "brand": "AXE", 
+            "price": 48, 
+            "volume": 2.6, 
+            "unit": "L", 
+            "inputDate": "3/10/2024"
+        },
+        {
+            "name": "", 
+            "brand": "", 
+            "price": 0, 
+            "volume": 0, 
+            "unit": "mL", 
+            "inputDate": "3/10/2024"
+        }
+    ]
+}

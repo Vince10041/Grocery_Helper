@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, TextInput, SafeAreaView, Pressable, Platform } from 'react-native';
 import { Dropdown } from "react-native-element-dropdown";
 import * as SQLite from 'expo-sqlite';
+import initialDataRaw from '../utils/initial_data.json';
 
 function AddProduct () {
 
@@ -11,6 +12,11 @@ function AddProduct () {
     // This is the default input for the timestamp when adding new product info
     const [inputTime, setTime] = useState(dateObj.getDate() + '/' + dateObj.getMonth() + '/' + dateObj.getFullYear());
     // console.log(inputTime);
+    
+    // change the type fo initialData to array
+    const initialData = initialDataRaw.initialData && Array.isArray(initialDataRaw.initialData) 
+    ? initialDataRaw.initialData 
+    : [];
 
 
     // useState for different columns
@@ -92,13 +98,36 @@ function AddProduct () {
     const deleteAll = () => {
         db.transaction(tx => {
             tx.executeSql(
-              'DELETE FROM Products',
-              [],
-              (_, result) => console.log(`Deleted ${result.rowsAffected} rows`),
-              (_, error) => console.log('Error deleting records:', error)
+            'DELETE FROM Products',
+            [],
+            (_, result) => console.log(`Deleted ${result.rowsAffected} rows`),
+            (_, error) => console.log('Error deleting records:', error)
             );
         });
     };  
+
+
+    // Testing button for adding initial data
+    const createData = () => {
+        if (initialData.length === 0) {
+            console.log('No initial data found or data is not in the correct format');
+            return;
+        }
+    
+        db.transaction(tx => {
+            initialData.forEach(item => {
+                tx.executeSql(
+                    'INSERT INTO Products (name, brand, price, volume, unit, inputDate) VALUES (?, ?, ?, ?, ?, ?)',
+                    [item.name, item.brand, item.price, item.volume, item.unit, item.inputDate],
+                    (_, result) => console.log(`Inserted item with ID: ${result.insertId}`),
+                    (_, error) => console.log('Error inserting item:', error)
+                );
+            });
+        }, 
+        error => console.log('Transaction error:', error),
+        () => console.log('Transaction success: All initial data inserted')
+        );
+    };
 
     return (
         <SafeAreaView>
@@ -176,10 +205,17 @@ function AddProduct () {
             </View>
 
             <Pressable
-                style={styles.saveButton}
+                style={styles.otherBtn}
                 onPress={deleteAll}
             >
                 <Text style={styles.saveText}>Delete All</Text>
+            </Pressable>
+
+            <Pressable
+                style={styles.otherBtn}
+                onPress={createData}
+            >
+                <Text style={styles.saveText}>Add initial data</Text>
             </Pressable>
             
         </SafeAreaView>
@@ -229,6 +265,17 @@ const styles = StyleSheet.create({
         marginLeft: 15,
         marginBottom: 5,
         fontSize: 16,
+    },
+    otherBtn: {
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: 'black',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 10,
     },
 });
 
