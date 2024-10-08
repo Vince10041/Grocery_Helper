@@ -17,7 +17,7 @@ function ShowStats () {
     const genGraph = useCallback((query) => {
         db.transaction(tx => {
             tx.executeSql(
-            'SELECT * FROM Products WHERE name LIKE ?',
+            'SELECT * FROM Products WHERE name LIKE ? ORDER BY date(inputDate)',
             [`%${query}%`],
             (txobj, resultSet) => {
                 const results = resultSet.rows._array;
@@ -34,10 +34,15 @@ function ShowStats () {
     }, []);
 
     const updateGraphData = (updatedProducts) => {
-        const prices = updatedProducts
+        const dataPoints = updatedProducts
             .filter(product => product.isChecked)
-            .map(product => product.price);
-        setGraphData(prices);
+            .map(product => ({
+                price: product.price,
+                date: new Date(product.inputDate)
+            }))
+            .sort((a, b) => a.date - b.date);
+
+        setGraphData(dataPoints.map(point => point.price));
     };
 
     const toggleCheckbox = (index) => {
@@ -90,7 +95,7 @@ function ShowStats () {
                             onValueChange={() => toggleCheckbox(index)}
                         />
                         <Text style={styles.productText}>
-                            {product.name} - {product.brand}
+                            {product.name} - {product.brand} ({product.inputDate})
                         </Text>
                     </View>
                 ))}
