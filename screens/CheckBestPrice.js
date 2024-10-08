@@ -16,7 +16,7 @@ const CheckBestPrice = () => {
 
   const fetchAllProducts = () => {
     db.transaction(tx => {
-      tx.executeSql('SELECT * FROM Products', null, 
+      tx.executeSql('SELECT * FROM Products ORDER BY date(inputDate) DESC', null, 
         (txobj, resultSet) => setProducts(resultSet.rows._array),
         (txobj, error) => console.log(error)
       );
@@ -39,7 +39,7 @@ const CheckBestPrice = () => {
 
     db.transaction(tx => {
       tx.executeSql(
-        'SELECT * FROM Products WHERE name LIKE ?',
+        'SELECT * FROM Products WHERE name LIKE ? ORDER BY date(inputDate) DESC',
         [`%${query}%`],
         (txobj, resultSet) => setProducts(resultSet.rows._array),
         (txobj, error) => console.log(error)

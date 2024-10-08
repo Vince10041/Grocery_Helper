@@ -33,8 +33,7 @@ function AddProduct () {
         { label: 'L', value: 'L'},
         { label: 'g', value: 'g'},
         { label: 'kg', value: 'kg'},
-        { label: 'jin', value: 'jin'},
-        { label: 'pound', value: 'pound'},
+        { label: 'lbs', value: 'lbs'},
         { label: 'units', value: 'units'}
     ];
 

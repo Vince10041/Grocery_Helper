@@ -14,6 +14,26 @@ function ShowStats () {
     const [graphData, setGraphData] = useState([]);
     const [products, setProducts] = useState([]);
 
+    const calculateNormalizedPrice = (price, volume, unit) => {
+        switch (unit.toLowerCase()) {
+            case 'ml':
+                return price / volume;
+            case 'l':
+                return price / (volume * 1000);
+            case 'g':
+                return price / volume;
+            case 'kg':
+                return price / (volume * 1000);
+            case 'lbs':
+                return price / (volume * 453.592); // 1 lbs = 453.592 g
+            case 'unit':
+                return price / volume;
+            default:
+                console.warn(`Unknown unit: ${unit}`);
+                return price;
+        }
+    };
+
     const genGraph = useCallback((query) => {
         db.transaction(tx => {
             tx.executeSql(
@@ -23,7 +43,8 @@ function ShowStats () {
                 const results = resultSet.rows._array;
                 const updatedProducts = results.map(product => ({
                     ...product,
-                    isChecked: true
+                    isChecked: true,
+                    normalizedPrice: calculateNormalizedPrice(product.price, product.volume, product.unit)
                 }));
                 setProducts(updatedProducts);
                 updateGraphData(updatedProducts);
@@ -37,7 +58,7 @@ function ShowStats () {
         const dataPoints = updatedProducts
             .filter(product => product.isChecked)
             .map(product => ({
-                price: product.price,
+                price: product.normalizedPrice,
                 date: new Date(product.inputDate)
             }))
             .sort((a, b) => a.date - b.date);
@@ -81,7 +102,7 @@ function ShowStats () {
                     data={graphData}
                     style={[tw`mb-4`]}
                     color="blue"
-                    label={target}
+                    label={`${target} (Price per base unit)`}
                     stat=""
                     percentage=""
                 />
