@@ -5,12 +5,14 @@ import { LineGraph } from "../components/LineGraph";
 import { Line } from "react-native-svg";
 import * as SQLite from 'expo-sqlite';
 import { tw } from "../tailwind";
+import Checkbox from 'expo-checkbox';
 
 const db = SQLite.openDatabase('product.db');
 
 function ShowStats () {
     const [target, setTarget] = useState("");
     const [graphData, setGraphData] = useState([]);
+    const [products, setProducts] = useState([]);
 
     const genGraph = useCallback((query) => {
         db.transaction(tx => {
@@ -19,13 +21,31 @@ function ShowStats () {
             [`%${query}%`],
             (txobj, resultSet) => {
                 const results = resultSet.rows._array;
-                const prices = results.map(product => product.price);
-                setGraphData(prices);
+                const updatedProducts = results.map(product => ({
+                    ...product,
+                    isChecked: true
+                }));
+                setProducts(updatedProducts);
+                updateGraphData(updatedProducts);
             },
             (txobj, error) => console.log(error)
             );
         });
     }, []);
+
+    const updateGraphData = (updatedProducts) => {
+        const prices = updatedProducts
+            .filter(product => product.isChecked)
+            .map(product => product.price);
+        setGraphData(prices);
+    };
+
+    const toggleCheckbox = (index) => {
+        const updatedProducts = [...products];
+        updatedProducts[index].isChecked = !updatedProducts[index].isChecked;
+        setProducts(updatedProducts);
+        updateGraphData(updatedProducts);
+    };
 
     useEffect(() => {
         console.log("Graph data updated:", graphData);
@@ -52,6 +72,7 @@ function ShowStats () {
 
             <View style={styles.graphContainer}>
                 <LineGraph
+                    key={graphData.join(',')}
                     data={graphData}
                     style={[tw`mb-4`]}
                     color="blue"
@@ -60,6 +81,20 @@ function ShowStats () {
                     percentage=""
                 />
             </View>
+
+            <ScrollView style={styles.productList}>
+                {products.map((product, index) => (
+                    <View key={index} style={styles.productItem}>
+                        <Checkbox
+                            value={product.isChecked}
+                            onValueChange={() => toggleCheckbox(index)}
+                        />
+                        <Text style={styles.productText}>
+                            {product.name} - {product.brand}
+                        </Text>
+                    </View>
+                ))}
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -106,6 +141,19 @@ const styles = StyleSheet.create({
     graphContainer: {
         marginLeft: 20,
         marginRight: 20,
+    },
+    productList: {
+        marginTop: 20,
+        marginHorizontal: 20,
+    },
+    productItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    productText: {
+        marginLeft: 10,
+        fontSize: 16,
     }
 });
 

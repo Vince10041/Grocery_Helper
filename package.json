@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
+    "@react-native-community/checkbox": "^0.5.17",
     "@react-navigation/bottom-tabs": "^6.5.11",
     "@react-navigation/native": "^6.1.9",
     "@rneui/base": "^4.0.0-rc.7",
@@ -17,6 +18,7 @@
     "axios": "^1.6.2",
     "d3": "^7.9.0",
     "expo": "^49.0.0",
+    "expo-checkbox": "~2.4.0",
     "expo-font": "~11.4.0",
     "expo-sqlite": "~11.3.3",
     "expo-status-bar": "~1.6.0",
