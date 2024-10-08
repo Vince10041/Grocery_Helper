@@ -131,6 +131,7 @@ function AddProduct () {
 
     return (
         <SafeAreaView>
+            <Text style={styles.searchText}>Add a Product</Text>
 
             <View style={styles.container}>
                 <Text style={styles.textLabel}>Product Name</Text>
@@ -230,6 +231,14 @@ const styles = StyleSheet.create({
         padding: 10,
         marginLeft: 15,
         marginRight: 15,
+    },
+    searchText: {
+        marginLeft: 15,
+        marginRight: 15,
+        marginTop: 15,
+        marginBottom: 10,
+        fontWeight: "bold",
+        fontSize: 25,
     },
     dropdownList: {
         borderColor: "gray",
